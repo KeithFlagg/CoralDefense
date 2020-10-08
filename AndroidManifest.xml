@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.arduinocontrol">
+    <uses-permission android:name = "android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name = "android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <permission android:name="android.permission.BLUETOOTH" android:label="BLUETOOTH" />
+    <permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+
+    <application
+        android:allowBackup="true"
+        android:hardwareAccelerated="false"
+        android:largeHeap="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="Coral Defense"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".Lightstrip" android:screenOrientation="portrait"></activity>
+        <activity android:name=".solenoidvalve" android:screenOrientation="portrait"/>
+        <activity android:name=".uvlight" android:screenOrientation="portrait"/>
+        <activity android:name=".Levelswitch2" android:screenOrientation="portrait"/>
+        <activity android:name=".Levelswitch1" android:screenOrientation="portrait"/>
+        <activity android:name=".Phmeter" android:screenOrientation="portrait"/>
+        <activity android:name=".Humiditysensor" android:screenOrientation="portrait"/>
+        <activity android:name=".Nutrientpump" android:screenOrientation="portrait"/>
+        <activity android:name=".Flowmeter" android:screenOrientation="portrait"/>
+        <activity android:name=".Airpump" android:screenOrientation="portrait"/>
+        <activity android:name=".Waterpump" android:screenOrientation="portrait"/>
+        <activity android:name=".HomeActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".MainActivity" android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
