@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--Manifest that contains every permission and library needed to run the application-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.arduinocontrol">
     <uses-permission android:name = "android.permission.BLUETOOTH_ADMIN"/>
@@ -11,6 +12,7 @@
     <permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE" />
 
     <application
         android:allowBackup="true"
