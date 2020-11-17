@@ -1,14 +1,24 @@
 package com.example.arduinocontrol;
 
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
     private CardView airPump, flowMeter, humiditySensor, levelSwitch1, levelSwitch2, lightStrip, phMeter, uvLight, waterPump, solenoidValve, nutrientPump;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +48,38 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         waterPump.setOnClickListener(this);
         solenoidValve.setOnClickListener(this);
         nutrientPump.setOnClickListener(this);
-    }
+        /*
+        Intent uv = new Intent(this, uvlight.class);
+        startActivityForResult(uv, 1);
+        */
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, new IntentFilter("errorCode"));
+
+
+    }
+    /*
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK) {
+                //get errorCode from uv light
+                String errorCode = data.getStringExtra("error");
+                if (errorCode.equals("-3")){
+                    uvLight.setCardBackgroundColor(0xFFFF0000);
+                }
+            }
+        }
+    }
+*/
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String errorMsg = intent.getStringExtra("error");
+            if (errorMsg.equals("-3")){
+                uvLight.setCardBackgroundColor(0xFFFF0000);
+            }
+        }
+    };
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
