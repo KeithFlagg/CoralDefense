@@ -6,7 +6,7 @@
 #define he_pin 25
 #define dht_pin 4
 #define fs_pin 2
-#define sensor_interrupt 0
+#define sensor_interrupt 0 //
 #define ls_pin 20
 #define led_pin 53
 #define fwfp_pin 22
@@ -167,10 +167,10 @@ int get_flow_info()
     flowrate = ((1000.0 / (millis() - oldtime)) * pulsecount) / calibration;
     oldtime = millis();
     volumeml = (flowrate / 60) * 1000;
-    totalml = volumeml += volumeml;
+    totalml += volumeml;
     Serial.print("Flow Rate:");
     Serial.print(flowrate);
-    Serial.print("L/min\n");
+    Serial.print("mL/min\n");
     Serial.print("Output Liquid Quantity: ");
     Serial.print(totalml);
     Serial.print("mL");
@@ -268,7 +268,6 @@ int state_check(int phonedata)
     return 22;
     break;
   default:
-    int n = -20;
     return -20;
     break;
   }
