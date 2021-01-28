@@ -42,6 +42,7 @@ public class uvlight extends AppCompatActivity implements OnClickListener{
     ConnectedThread mConnectedThread = null;
     ConnectThread mConnectThread = null;
 
+    private static final String TAG = "Bluetooth";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -101,7 +102,6 @@ public class uvlight extends AppCompatActivity implements OnClickListener{
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
 
         //links on and off to their element IDs
         on=(Button)findViewById(R.id.uvlighton);
@@ -203,6 +203,7 @@ public class uvlight extends AppCompatActivity implements OnClickListener{
         public void cancel() {
 
                     try {
+                        Log.e(TAG, "- mmSocket CLOSED! -");
                         mmSocket.close();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -286,6 +287,7 @@ public class uvlight extends AppCompatActivity implements OnClickListener{
         public void cancel() {
 
                 try {
+                    Log.e(TAG, "- mmSocket CLOSED! -");
                     mmSocket.close();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -309,7 +311,19 @@ public class uvlight extends AppCompatActivity implements OnClickListener{
         }
     }
 
-    //Suppresses an annoying handler lear warning
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.e(TAG, "- ON RESUME -");
+    }
+
+    public synchronized void onPause() {
+        super.onPause();
+        Log.e(TAG, "- ON PAUSE -");
+    }
+
+
+    //Suppresses an annoying handler leak warning
     @SuppressLint("HandlerLeak")
     Handler mHandler = new Handler() {
         @Override
@@ -335,6 +349,6 @@ public class uvlight extends AppCompatActivity implements OnClickListener{
             }
         }
     };
-    
+
 }
 
