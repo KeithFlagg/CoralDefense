@@ -2,6 +2,7 @@
 //level switch low turn on uv sterilization and fresh water pump
 #include <dht.h> //Library needed for humidity and temperature sensors
 #include <stdlib.h>
+#define bt_state 37
 #define uv_pin 23
 #define he_pin 25
 #define dht_pin 4
@@ -46,7 +47,7 @@ int receiver = 0;                     //int that gets read from the phone
 char *arr[5];                         //string array for formatting sender
 void setup()
 {
-
+  pinMode(bt_state,INPUT);
   pinMode(led_pin, OUTPUT);
   pinMode(ls_pin, INPUT_PULLUP);
   pinMode(he_pin, INPUT);
@@ -69,13 +70,11 @@ void loop()
   //recieve data timer
   if (current_time - recieve_previous_time >= recieve_time_trigger)
   {
-    if ((readcheck = recieve_data()) == 0)
-    {
-      Serial.println("----Nothing new read----");
-    }
+    readcheck = recieve_data();
     if (readcheck < 0)
     {
       bt_error(readcheck);
+      inboard_error(readcheck);
     }
     else
     {
@@ -89,7 +88,7 @@ void loop()
     if ((packagecheck = package_bundle()) >= 0)
     {
       Serial.println("----Successful Packaging----");
-      if ((sendcheck = send_bundle()) >= 0)
+      if ((sendcheck = send_bundle()) > 0)
       {
         Serial.println("----Successful Sending----");
       } //sendcheck if
@@ -103,9 +102,10 @@ void flow_sensor_pulse_counter()
 }
 char *convert_float_to_string(float n, int stringlength, int precision)
 {
-  char *mynum = new char[15];
-  dtostrf(n, stringlength, precision, mynum);
-  return mynum;
+  char buff[stringlength];
+  char* float_to_be_converted = buff;
+  dtostrf(n, stringlength, precision, float_to_be_converted);
+  return float_to_be_converted;
 }
 float get_humidity()
 {
@@ -203,9 +203,9 @@ int package_bundle()
   get_flow_info();
   arr[0] = convert_float_to_string(get_humidity(), 3, 2);
   arr[1] = convert_float_to_string(get_temperature(), 3, 2);
-  arr[2] = convert_float_to_string(flow_rate_ml, 7, 2);
-  arr[3] = convert_float_to_string(flow_total_ml, 7, 2);
-  arr[4] = convert_float_to_string(flow_volume_ml, 7, 2);
+  arr[2] = convert_float_to_string(flow_rate_ml, 3, 2);
+  arr[3] = convert_float_to_string(flow_total_ml, 3, 2);
+  arr[4] = convert_float_to_string(flow_volume_ml, 3, 2);
   int n = sprintf(sender,
                   "Humidity:%s#\nTemperature:%s#\nFlow_Frequency:%s#\nFlow_flow_total_ml:%s#\nFlow_Rate_ml:%s#\nHall_Effect_State:%d#\nLevel_Switch_State:%i#\nUV_State %d#\n",
                   arr[0], arr[1], arr[2], arr[3], arr[4], get_he_state(), get_ls_state(), get_uv_state());
@@ -219,23 +219,33 @@ int package_bundle()
 }
 int send_bundle()
 {
+  int btcheck=digitalRead(bt_state);
+  if(btcheck==LOW){
+    Serial.println("----No bluetooth connection aborting data transmission----");
+    return 0;
+    }
   if (bt.availableForWrite())
   {
     Serial.println("Sending String:");
     Serial.print(sender);
     bt.println(sender);
-    return 0;
+    return 1;
   }
   else
     return -15;
 }
 int recieve_data()
 {
-  int n = receiver;
+   int btcheck=digitalRead(bt_state);
+  if(btcheck==LOW){
+    Serial.println("----No bluetooth connection aborting data transcription----");
+    return 0;
+    }
+  int num = receiver;
   if (bt.available())
   {
     receiver = bt.read();
-    if (n != receiver)
+    if (num != receiver)
     {
       Serial.println(receiver);
       return receiver;
@@ -245,9 +255,7 @@ int recieve_data()
       return 0;
     }
   }
-  else
-    Serial.println("----No Bluetooth connection----");
-  return -12;
+  
 }
 int state_check(int phonedata)
 {
@@ -306,4 +314,3 @@ int inboard_error(int code)
     return -53;
   }
 }
-
